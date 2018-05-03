@@ -14,20 +14,22 @@ services:
         tag: tutum    # TAG
         # fluentd-address: 127.0.0.1:24224
     deploy:
+      resources:  #Restricciones de cpu y RAM
+        limits:
+          cpus: '0.10'
+          memory: 20M
+        reservations:
+          cpus: '0.05'
+          memory: 10M
+
       restart_policy:
-           condition: on-failure
+           condition: on-failure # Si ocurre una falla durante el servicio, entonces este debe reiniciarse para entrar a operar nuevamente
            delay: 20s
-           max_attempts: 3
+           max_attempts: 3 
            window: 120s
       mode: replicated
       replicas: 3 
-#      resources:
-#	limits:
-#	  cpus: '0.10'
-#	  memory: 20M
-#	reservations:
-#	  cpus: '0.05'
-#	  memory: 10M
+
       placement:
         constraints: [node.role == worker] # Se ejecutara en los dos nodos workers
       update_config:
@@ -139,3 +141,6 @@ services:
 
 networks:
  net:
+
+
+# Red por defecto, docker realiza una configuracion en modo bridge de forma automatica
